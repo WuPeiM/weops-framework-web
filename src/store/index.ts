@@ -14,9 +14,9 @@ const modules = {
 // @ts-ignore
 const appFiles = require.context('@/projects', true, /\/store$/)
 
-appFiles.keys().forEach(key => {
+appFiles.keys().forEach((key) => {
     const module = appFiles(key).default
-    Object.keys(module).forEach(name => {
+    Object.keys(module).forEach((name) => {
         modules[name] = module[name]
     })
 })

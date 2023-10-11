@@ -21,8 +21,8 @@
 └── main.ts # 入口 加载组件 自定义指令 初始化等
 ```
 ### example目录文件内容示例
-``` bash
-# api/modules/example.ts
+``` js
+//  api/modules/example.ts
 import { get, post } from '@/api/axiosconfig/axiosconfig'
 
 const mockUrl = 'http://yapi.canway.top/mock/1273' // 你可以使用yapi进行mock数据
@@ -36,8 +36,8 @@ export default {
     }
 }
 ```
-``` bash
-# api/index.ts
+``` js
+//  api/index.ts
 import example from './modules/example'
 
 const exampleBaseApi = {
@@ -46,8 +46,10 @@ const exampleBaseApi = {
 
 export default exampleBaseApi
 ```
-``` bash
-# router/frameRouter.ts
+``` js
+// router/frameRouter.ts
+
+// 引入页面
 const Example = () => import('@example/views/index.vue')
 
 const routerPrefix = 'example'
@@ -63,13 +65,17 @@ export const frameRouter = [
     }
 ]
 
+// 子应用入口，主框架会找到该文件的路由配置，合并到主框架中
 export const adminRouteConfig = [
     {
+        // 相当于一级菜单
         name: '子应用',
         id: 'ExampleApp',
+        // children数组相当于二级菜单，可配置多个对象
         children: [
             {
                 name: '子应用首页',
+                // id需要与上面frameRouter的name一致
                 id: 'Example'
             }
         ]
@@ -78,11 +84,11 @@ export const adminRouteConfig = [
 
 export const createAdminRouteConfig = () => adminRouteConfig
 ```
-``` bash
-# store/modules/example.ts
+``` js
+//  store/modules/example.ts
 // initial state
 const state = {
-    list: []
+    list: [{'message': '我是信息'}]
 }
 
 // getters
@@ -112,16 +118,16 @@ export default {
     mutations
 }
 ```
-``` bash
-# store/index.ts
+``` js
+//  store/index.ts
 import example from './modules/example'
 
 export default {
     example
 }
 ```
-``` bash
-# views/index.vue
+``` js
+//  views/index.vue
 <template>
     <div class="example-wrapper" v-bkloading="{ isLoading: loading, zIndex: 10 }">
         <div class="example-wrapper-content">
@@ -182,14 +188,14 @@ export default class Example extends Vue {
 }
 </style>
 ```
-``` bash
-# main.ts
+``` js
+//  main.ts
 // 公共方法
-import './controller/func'
+import '../../controller/func/common'
 
 ```
 ### 服务启动及打包
-``` bash
+``` js
 # 服务启动
 npm run dev
 

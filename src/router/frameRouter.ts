@@ -34,10 +34,12 @@ const manageMenu = []
 // 自动导入子应用
 // @ts-ignore
 const files = require.context('@/projects', true, /frameRouter.ts/)
+console.log('aaaa', files('./example/router/frameRouter.ts'))
 files.keys().forEach(key => {
     const router = files(key).frameRouter
     const menuList = files(key).adminRouteConfig
     const subsMenu = files(key).subsMenuList
+    console.log('----', router, menuList, subsMenu)
     mainRouter = mainRouter.concat(router)
     // 处理合并项目菜单
     menuList.forEach(item => {
