@@ -9,7 +9,8 @@ const state = {
     navLists: [],
     addNavLists: [],
     user: {},
-    menuList: [],
+    // menuList: [],
+    menuList: menuList,
     completeDynamicRoute: false,
     ticketCount: 0,
     activationMenu: [],
@@ -38,6 +39,7 @@ function handleActivationMenu(userInfo, type) {
             // @ts-ignore
             const commonFiles = require.context('@/projects', true, /\.ts$/)
             const module = commonFiles('./common/common/dynamicMenus.ts')
+            console.log('[[[[[[[[[[[[[[', module)
             if (module?.default) {
                 module.default.dealDynamicMenus(JSON.parse(JSON.stringify(menuList)), customMenu)
             }
@@ -160,73 +162,74 @@ const mutations = {
 // actions
 const actions = {
     async GenerateNavLists1({commit}) {
-        setTimeout(() => {
-            vue.prototype.$bus.$emit('setAppLoading', true)
-        }, 0)
-        const promise = new Promise((resolve, reject) => {
-            api.User.homeInfo().then(async res => {
-                if (res.result) {
-                    const { data } = res
-                    sessionStorage.setItem('loginInfo', JSON.stringify(data))
-                    window['$store'].commit('setLoginInfo', data)
-                    commit('setUser', { ...data })
-                    if (api.ticket) {
-                        api.ticket.getTickets({
-                            page: 1,
-                            page_size: 1,
-                            view_type: 'my_todo'
-                        }).then(res => {
-                            if (!res.result) {
-                                return false
-                            }
-                            commit('setTicketCount', res.data.count)
-                        })
-                    }
-                    commit('setMenuList', handleMenuList(res.data))
-                    commit('setActivationMenu', handleActivationMenu(res.data, ''))
-                    if (res.data.applications.includes('chat_ops') && hasCommonFolder('common')) {
-                        // @ts-ignore
-                        const commonFiles = require.context('@/projects', true, /\.ts$/)
-                        const module = commonFiles('./common/common/loadBot.ts')
-                        if (module?.default) {
-                            await module.default.loadChatBot()
-                        }
-                    }
-                    resolve(res.data)
-                } else {
-                    reject(res.message)
-                }
-            }).finally(() => {
-                setTimeout(() => {
-                    vue.prototype.$bus.$emit('setAppLoading', false)
-                }, 0)
-            })
-        })
-        return promise
+        // setTimeout(() => {
+        //     vue.prototype.$bus.$emit('setAppLoading', true)
+        // }, 0)
+        // const promise = new Promise((resolve, reject) => {
+        //     console.log('api', api)
+        //     api.User.homeInfo().then(async res => {
+        //         if (res.result) {
+        //             const { data } = res
+        //             sessionStorage.setItem('loginInfo', JSON.stringify(data))
+        //             window['$store'].commit('setLoginInfo', data)
+        //             commit('setUser', { ...data })
+        //             if (api.ticket) {
+        //                 api.ticket.getTickets({
+        //                     page: 1,
+        //                     page_size: 1,
+        //                     view_type: 'my_todo'
+        //                 }).then(res => {
+        //                     if (!res.result) {
+        //                         return false
+        //                     }
+        //                     commit('setTicketCount', res.data.count)
+        //                 })
+        //             }
+        //             commit('setMenuList', handleMenuList(res.data))
+        //             commit('setActivationMenu', handleActivationMenu(res.data, ''))
+        //             if (res.data.applications.includes('chat_ops') && hasCommonFolder('common')) {
+        //                 // @ts-ignore
+        //                 const commonFiles = require.context('@/projects', true, /\.ts$/)
+        //                 const module = commonFiles('./common/common/loadBot.ts')
+        //                 if (module?.default) {
+        //                     await module.default.loadChatBot()
+        //                 }
+        //             }
+        //             resolve(res.data)
+        //         } else {
+        //             reject(res.message)
+        //         }
+        //     }).finally(() => {
+        //         setTimeout(() => {
+        //             vue.prototype.$bus.$emit('setAppLoading', false)
+        //         }, 0)
+        //     })
+        // })
+        // return promise
     },
-    async getAllUserList({commit}) {
-        const promise = new Promise((resolve, reject) => {
-            api.Server.getBkUsers({
-                page_size: -1
-            }).then(res => {
-                if (res.result) {
-                    const userData = res.data.items.filter(item => item.bk_username).map(item => {
-                        return {
-                            key: item.bk_username,
-                            display: item.bk_username,
-                            chname: item.chname,
-                            displayKey: `${item.chname}(${item.bk_username})`
-                        }
-                    })
-                    sessionStorage.setItem('allUserData', JSON.stringify(userData))
-                    resolve(res.data)
-                } else {
-                    reject(res.message)
-                }
-            })
-        })
-        return promise
-    },
+    // async getAllUserList({commit}) {
+    //     const promise = new Promise((resolve, reject) => {
+    //         api.Server.getBkUsers({
+    //             page_size: -1
+    //         }).then(res => {
+    //             if (res.result) {
+    //                 const userData = res.data.items.filter(item => item.bk_username).map(item => {
+    //                     return {
+    //                         key: item.bk_username,
+    //                         display: item.bk_username,
+    //                         chname: item.chname,
+    //                         displayKey: `${item.chname}(${item.bk_username})`
+    //                     }
+    //                 })
+    //                 sessionStorage.setItem('allUserData', JSON.stringify(userData))
+    //                 resolve(res.data)
+    //             } else {
+    //                 reject(res.message)
+    //             }
+    //         })
+    //     })
+    //     return promise
+    // },
     updateMenuList({commit}, userInfo) {
         commit('setMenuList', handleMenuList(userInfo))
     }

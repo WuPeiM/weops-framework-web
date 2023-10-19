@@ -25,9 +25,9 @@
             this.width = width
             this.height = height
 
-            setTimeout(() => {
-                this.isShow = true
-            }, 300)
+            // setTimeout(() => {
+            //     this.isShow = true
+            // }, 300)
         }
 
         onLoad() {

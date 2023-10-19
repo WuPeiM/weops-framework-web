@@ -195,6 +195,7 @@
         }
         get needLeftNav() {
             const target = this.menuList.find(item => item.id === this.activeTopNav)
+            console.log('啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊', target, this.activeTopNav)
             return !!(target && target.children)
         }
         get headerHight() {
@@ -209,6 +210,7 @@
         })
         on$routeChanged(val) {
             let routeValue = val
+            console.log('routeValue``````````', routeValue, val, this.menuList)
             // 若watch的变量updateCustomMenu，则为布尔值，即该菜单改变时处理如下
             if (typeof val === 'boolean') {
                 routeValue = this.$route
@@ -365,15 +367,15 @@
         handleSelect(id, item) {
             this.nav.id = id
         }
-        getLogo() {
-            this.$api.Server.getLogo({}, {
-                cancelWhenRouteChange: false
-            }).then(res => {
-                if (res.result) {
-                    this.nav.logo = res.data.value
-                }
-            })
-        }
+        // getLogo() {
+        //     this.$api.Server.getLogo({}, {
+        //         cancelWhenRouteChange: false
+        //     }).then(res => {
+        //         if (res.result) {
+        //             this.nav.logo = res.data.value
+        //         }
+        //     })
+        // }
         changeTopNav(item) {
             if (item.isUrl) {
                 window.open(item.url, '_blank')

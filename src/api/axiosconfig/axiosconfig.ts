@@ -97,7 +97,7 @@ export const put = (url, params, opts = {}) =>
     getPromise('put', url, params, opts)
 
 // delete
-export const deletes = (url, params, opts = {}) =>
+export const deletes = (url, params?: any, opts = {}) =>
     getPromise('delete', url, params, opts)
 
 // patch

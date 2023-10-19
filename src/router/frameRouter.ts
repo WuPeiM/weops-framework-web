@@ -34,11 +34,12 @@ const manageMenu = []
 // 自动导入子应用
 // @ts-ignore
 const files = require.context('@/projects', true, /frameRouter.ts/)
-console.log('aaaa', files('./example/router/frameRouter.ts'))
+console.log('files.keys()', files.keys())
 files.keys().forEach(key => {
     const router = files(key).frameRouter
     const menuList = files(key).adminRouteConfig
     const subsMenu = files(key).subsMenuList
+    // 相当于一级菜单，二级菜单，三级菜单
     console.log('----', router, menuList, subsMenu)
     mainRouter = mainRouter.concat(router)
     // 处理合并项目菜单
@@ -72,7 +73,10 @@ routeConfig.forEach(item => {
 })
 
 export const frameRouter = mainRouter
+console.log('frameRouter~~~~~~~', frameRouter)
 
 export const menuList = routeConfig
+console.log('menuList~~~~~~~~', menuList)
 
 export const subsMenuList = subsMenuPromission
+console.log('subsMenuList~~~~~~~', subsMenuList)

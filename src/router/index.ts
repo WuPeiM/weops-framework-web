@@ -17,6 +17,7 @@ const files = require.context('@/projects', true, /\.\/[^/]+\/.*/)
 
 // 判断是否包含了 common 文件夹
 const hasCommonFolder = (fileName) => {
+    console.log('files.keys()', files.keys())
     return files.keys().some(key => key.indexOf(`/${fileName}/`) !== -1)
 }
 
@@ -74,6 +75,7 @@ function checkRouteAccess(to, from, next) {
         next({path: from.path})
         return
     }
+    // to.name有在framRouter中则是true，否则是false
     const isDefinedRoute = frameRouter.some(item => item.name === to?.name)
     const ids = findIdsWithNoChildren(permission.menuList).concat(['404', '403', 'AuthPermissionFail'])
     const isHasPermission = ids.includes(to.name) || (to?.meta?.parentIds || []).filter(r => ids.includes(r)).length || ids.includes(to?.meta?.relatedMenu)
@@ -93,6 +95,7 @@ function dealRouterByPermission(to, from, next) {
     const permission = store.state.permission
     const userInfo = permission.user
     const menuList = permission.menuList
+    console.log('to``````````````', permission, to, from)
     // 判断是否为已激活,未激活的话,进行跳转判断
     if (!window['is_activate'] && to.name !== 'CreditManage') {
         if (to.name === 'ActivationPage') {
@@ -123,11 +126,17 @@ function dealRouterByPermission(to, from, next) {
                     next()
                 } else {
                     // 访问的path='/'若不存在home页面,则获取第一个id
+                    console.log('menuList', menuList)
+                    // 如果菜单列表里没有信息，跳到403
                     if (menuList.length === 0) {
                         next({name: 'AuthPermissionFail'})
                     } else {
-                        const defaultName = findFirstUrl(menuList)
-                        next({ name: defaultName })
+                        // 如果有信息，跳到首页'Example'
+                        // const defaultName = findFirstUrl(menuList)
+                        // console.log('defaultName==========', defaultName)
+                        const toName = menuList[0]?.children[0].id
+                        next({name: toName})
+                        // next({ name: defaultName })
                     }
                 }
             } else {
@@ -145,13 +154,17 @@ function dealRouterByPermission(to, from, next) {
 }
 
 router.beforeEach(async(to, from, next) => {
+    // 路由跳转前取消请求
     await cancelRequest()
     const permission = store.state.permission
+    console.log('permission', permission) // 都为空数组或者false
     const menu = store.state.menu
+    console.log('menu', menu) // undefined
     const completeDynamicRoute = permission.completeDynamicRoute
     const completeLoadChildApp = menu?.completeLoadChildApp
     // 处理其他菜单 如:资产的动态和基础监控的动态菜单时,需要走以下的公共逻辑
     if (!completeDynamicRoute && hasCommonFolder('common')) {
+        console.log('进入公共逻辑----')
         // @ts-ignore
         const commonFiles = require.context('@/projects', true, /\.ts$/)
         const module = commonFiles('./common/router/dealRoute.ts')
@@ -174,5 +187,6 @@ router.beforeEach(async(to, from, next) => {
         await handleRouteAuthorization(to, from, next)
     }
 })
+console.log('=============router', router)
 
 export default router
